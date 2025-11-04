@@ -109,6 +109,10 @@ Welcome to GitLab, @username!
 ```bash
 git clone git@<IP-Address>:<username>/<project-name>.git
 ```
+เเนะนำให้ใช้ ssh เพราะ เราเปลี่ยน port external ในที่นี้ 2200:22 
+```bash
+git clone ssh://git@192.168.8.136:2200/dev_team/teacher-evaluation-system.git
+```
 
 **ตัวอย่าง:**
 ```bash
