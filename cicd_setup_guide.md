@@ -181,6 +181,10 @@ Enter tags for the runner (comma-separated):
 ```
 deploy
 ```
+**ถ้าเจอถาม Enter optional maintenance note for the runner:  **
+```
+ให้ใส่อะไรก็ได้เป็น note ไว้
+```
 
 #### ❓ Enter an executor
 
