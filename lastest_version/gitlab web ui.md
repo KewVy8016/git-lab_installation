@@ -68,3 +68,8 @@ Token ที่จะได้จากคู่มือต่อไปนี�
 เลื่อนไปหา เมนู runner เมื่อกดไปที่ runner จะเเสดง dropdown menu ออกมา ส่วนสำคัญเราต้องไปกด ที่ 3 จุด ข้างปุ่ม create project runner จะเเสดง Registration token ให้เราทำการ Copy เเละนำไปลงทะเบียน บน gitlb runner server ของเรา เพื่อให้ตัว runner สามารถเข้ามาที่ project นี้ได้
 
 ![enter image description here](https://github.com/KewVy8016/git-lab_installation/blob/master/image/runner%20token.png?raw=true)
+
+## การดู pipeline 
+ไปที่ sidebar menu build จะมี หัวข้อ pipeline เมื่อมีการสร้างไฟล์ .gitlab-ci.yml หรือ commit ไฟล์ .gitlab-ci.yml ไปที่ main จะ trigger เเละอ่าน ci/cd อัติโนมัติ
+
+![enter image description here](https://github.com/KewVy8016/git-lab_installation/blob/master/image/pipeline%20.png?raw=true)
