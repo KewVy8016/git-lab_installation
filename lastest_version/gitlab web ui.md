@@ -43,7 +43,8 @@ ___
 
 ![enter image description here](https://github.com/KewVy8016/git-lab_installation/blob/master/image/create%20project.png?raw=true)
 
-เมื่อเลือก create blank project จะเเสดงหน้าต่างนี้ขึ้นมา ให้กรอก project name เเละเลือก Project URL (สามารถสร้าง group ขึ้นมาเเล้วใส่ตรงนี้ได้) จอนนี้ใช้คนเดียวก็เลือกเป็น username ตัวเอง เเละเลือกเป็น internal หากตั้งค่าหมดเเล้วให้กด create project
+เมื่อเลือก create blank project จะเเสดงหน้าต่างนี้ขึ้นมา ให้กรอก project name เเละเลือก Project URL (สามารถสร้าง group ขึ้นมาเเล้วใส่ตรงนี้ได้) ตอนนี้ใช้คนเดียวก็เลือกเป็น username ตัวเอง เเละเลือกเป็น internal หากตั้งค่าหมดเเล้วให้กด create project
+
 ![enter image description here](https://github.com/KewVy8016/git-lab_installation/blob/master/image/setting%20project.png?raw=true)
 
 หลังจากสร้างโปรเจคจะเเสดงหน้า project dashboard 
