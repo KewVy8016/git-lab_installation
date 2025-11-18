@@ -47,7 +47,7 @@ services:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://192.168.254.128:8000/'  
     ports:
-      - '8000:80'
+      - '8000:8000'
       - '4430:443'
       - '2200:22'
     volumes:
