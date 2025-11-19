@@ -212,16 +212,53 @@ services:
     image: gitlab/gitlab-runner:latest
     container_name: gitlab-runner
     restart: always
+    privileged: true
     volumes:
       - './config:/etc/gitlab-runner'
       - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/usr/bin/docker:/usr/bin/docker'
+      - '/usr/libexec/docker:/usr/libexec/docker'
 ```
+
+**คำอธิบาย:**
+- `privileged: true` - ให้สิทธิ์พิเศษแก่ container เพื่อสามารถใช้งาน Docker daemon
+- `/var/run/docker.sock` - เชื่อมต่อกับ Docker socket ของ host
+- `/usr/bin/docker` - bind mount Docker CLI
+- `/usr/libexec/docker` - bind mount Docker plugins/utilities
 
 ---
 
 ## ส่วนที่ 8: การเริ่มระบบ GitLab Runner
 
-### 8.1 เริ่มต้น Container
+### 8.1 เพิ่ม User เข้ากลุ่ม Docker
+
+ก่อนเริ่มต้น Container ต้องเพิ่ม user ปัจจุบันเข้ากลุ่ม docker:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+จากนั้นต้อง **Logout และ Login เข้าใหม่** หรือใช้คำสั่ง:
+
+```bash
+newgrp docker
+```
+
+ตรวจสอบว่าเข้ากลุ่มแล้ว:
+
+```bash
+groups
+```
+
+ควรเห็น `docker` ในรายการกลุ่ม
+
+### 8.2 ตั้งค่า Permission Docker Socket
+
+```bash
+sudo chmod 666 /var/run/docker.sock
+```
+
+### 8.3 เริ่มต้น Container
 
 รันคำสั่งเพื่อเริ่มต้นระบบ:
 
@@ -377,37 +414,6 @@ local-runner                        Executor=docker Token=abc123 URL=http://192.
 sudo systemctl restart docker
 ```
 
-**สำคัญ:** ต้องทำทั้งบน GitLab Server และ Web Server
-
-### 10.2 Push Image ไปยัง Registry
-
-```bash
-# Tag image ที่ต้องการ push
-docker tag my-image:latest 192.168.254.128:5000/my-image:latest
-
-# Push image ไปยัง registry
-docker push 192.168.254.128:5000/my-image:latest
-```
-
-### 10.3 Pull Image จาก Registry
-
-```bash
-docker pull 192.168.254.128:5000/my-image:latest
-```
-
-### 10.4 ดูรายการ Images ใน Registry
-
-```bash
-curl http://192.168.254.128:5000/v2/_catalog
-```
-
-### 10.5 ดู Tags ของ Image
-
-```bash
-curl http://192.168.254.128:5000/v2/my-image/tags/list
-```
-
----
 
 ## ส่วนที่ 11: การเชื่อมต่อ GitLab กับ Docker Registry
 
@@ -421,7 +427,7 @@ stages:
 variables:
   DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
-  REGISTRY: 192.168.254.128:5000
+  REGISTRY: 192.168.254.128.:5000
 
 # ================= BUILD =================
 build:
@@ -440,14 +446,13 @@ build:
 # ================= DEPLOY =================
 deploy:
   stage: deploy
-  image: docker/compose:latest
+  image: docker:25.0-cli
   tags:
     - deploy
-  variables:
-    REGISTRY: $REGISTRY
   script:
-    - docker-compose pull
-    - docker-compose up -d
+    - echo "REGISTRY = $REGISTRY"   # ✔ ดูค่าจริง
+    - docker compose pull
+    - docker compose up -d
   only:
     - main
 ```
@@ -469,6 +474,9 @@ deploy:
 
 **สำหรับ GitLab Runner (192.168.254.129):**
 - Runner ต้องมีสิทธิ์เข้าถึง Docker socket
+- **ต้องใช้ privileged mode** (`privileged: true`)
+- **ต้อง bind mount Docker CLI และ plugins**
+- **User ต้องอยู่ในกลุ่ม docker**
 - ใช้ tag `deploy` ในการระบุ runner ที่จะใช้งาน
 - Runner จะดึง Docker images มาใช้งานตามที่กำหนด
 
