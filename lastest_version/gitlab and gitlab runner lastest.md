@@ -430,7 +430,7 @@ stages:
 variables:
   DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
-  REGISTRY: 100.100.7.32:5000
+  REGISTRY: 100.100.7.32:5000 #ใส่ ip เเละ port ของ registry server
 
 # ================= BUILD =================
 build:
