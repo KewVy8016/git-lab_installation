@@ -414,6 +414,9 @@ local-runner                        Executor=docker Token=abc123 URL=http://192.
 sudo systemctl restart docker
 ```
 
+**สำคัญ:** ต้องทำทั้งบน GitLab Server และ Web Server
+
+---
 
 ## ส่วนที่ 11: การเชื่อมต่อ GitLab กับ Docker Registry
 
@@ -427,7 +430,7 @@ stages:
 variables:
   DOCKER_HOST: unix:///var/run/docker.sock
   DOCKER_DRIVER: overlay2
-  REGISTRY: 192.168.254.128.:5000
+  REGISTRY: 100.100.7.32:5000
 
 # ================= BUILD =================
 build:
@@ -455,6 +458,7 @@ deploy:
     - docker compose up -d
   only:
     - main
+
 ```
 
 ---
