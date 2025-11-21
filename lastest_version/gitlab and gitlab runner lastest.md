@@ -45,14 +45,14 @@ mkdir -p gitlab/config gitlab/logs gitlab/data registry/data
 ```yaml
 version: "3.7"
 
+version: "3.7"
 services:
   gitlab:
     image: 'gitlab/gitlab-ce:latest'
     container_name: gitlab
     restart: always
-    hostname: '192.168.254.128' # ตรงนี้แนะนำใส่เป็น ip ของ server gitlab
+    hostname: '192.168.254.128'
     environment:
-      # ส่วนนี้สำคัญ ถ้าหาก hostname ใช้เป็น ip เหมือนกัน ถ้าใช้ domain ก็ต้องเป็น domain เหมือนกัน
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://192.168.254.128:8000/'
     ports:
@@ -69,37 +69,48 @@ services:
 
   registry:
     image: registry:2
-    container_name: docker-registry
+    container_name: registry
     restart: always
     ports:
       - '5000:5000'
     volumes:
       - './registry/data:/var/lib/registry'
-    environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
-      REGISTRY_STORAGE_DELETE_ENABLED: 'true'
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cat > /etc/docker/registry/config.yml << 'EOF'
+        version: 0.1
+        log:
+          level: info
+        storage:
+          filesystem:
+            rootdirectory: /var/lib/registry
+        http:
+          addr: :5000
+          headers:
+            Access-Control-Allow-Origin: ['*']
+            Access-Control-Allow-Methods: ['HEAD', 'GET', 'OPTIONS', 'DELETE', 'PUT', 'POST']
+            Access-Control-Allow-Headers: ['Authorization', 'Accept', 'Content-Type']
+        EOF
+        /entrypoint.sh /etc/docker/registry/config.yml
     networks:
       - gitlab-network
 
-  registry:
-    image: registry:2
-    container_name: docker-registry
-    restart: always
-    ports:
-      - '5000:5000'
-    volumes:
-      - './registry/data:/var/lib/registry'
-    environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
-      REGISTRY_STORAGE_DELETE_ENABLED: 'true'
-      # --- ADD THESE ENVIRONMENT VARIABLES HERE ---
-      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Origin: '["http://192.168.254.128:8080"]' #port ของ registry ui
-      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Methods: '["HEAD", "GET", "OPTIONS", "DELETE"]'
-      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Headers: '["Authorization", "Accept"]'
-      REGISTRY_HTTP_HEADERS_Access_Control_Expose_Headers: '["Link"]'
-      # ---------------------------------------------
-    networks:
-      - gitlab-network
+  registry-ui:
+    image: joxit/docker-registry-ui:latest
+    container_name: registry-ui
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      REGISTRY_TITLE: My Docker Registry
+      REGISTRY_URL: http://192.168.254.128:5000
+      DELETE_IMAGES: 'true'
+      SHOW_CONTENT_DIGEST: 'true'
+      SINGLE_REGISTRY: 'true'
+    networks:
+      - gitlab-network
 
 networks:
   gitlab-network:
