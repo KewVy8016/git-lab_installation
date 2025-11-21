@@ -93,7 +93,7 @@ services:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
       REGISTRY_STORAGE_DELETE_ENABLED: 'true'
       # --- ADD THESE ENVIRONMENT VARIABLES HERE ---
-      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Origin: '["http://192.168.254.128:8080"]' 
+      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Origin: '["http://192.168.254.128:8080"]' #port ของ registry ui
       REGISTRY_HTTP_HEADERS_Access_Control_Allow_Methods: '["HEAD", "GET", "OPTIONS", "DELETE"]'
       REGISTRY_HTTP_HEADERS_Access_Control_Allow_Headers: '["Authorization", "Accept"]'
       REGISTRY_HTTP_HEADERS_Access_Control_Expose_Headers: '["Link"]'
