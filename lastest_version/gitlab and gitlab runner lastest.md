@@ -225,8 +225,44 @@ services:
 - `/var/run/docker.sock` - เชื่อมต่อกับ Docker socket ของ host
 - `/usr/bin/docker` - bind mount Docker CLI
 - `/usr/libexec/docker` - bind mount Docker plugins/utilities
+  
+**ให้เข้าไปเช็คทุกครั้งในไฟล์ config.toml ของ runner ว่า Privelleged เป็น True เเละมีการ mount docker sock เเล้ว ไฟล์นี้จะเเสดงขึ้นมาหลังจากทำการลงทะเบียน gitlab runner กับ project เสร็จสิ้น**
+  แก้ไขไฟล์ /etc/gitlab-runner/config.toml บนเครื่อง Host ที่รัน Runner โดยเพิ่มการตั้งค่า 2 ส่วนในบล็อก [runners.docker] ที่ตรงกับ Runner 
 
----
+การตั้งค่า docker.sock ใน config.toml
+1. เปิดโหมด privileged
+ต้องกำหนดให้ Container ของ Runner มีสิทธิ์เข้าถึงอุปกรณ์และ Socket ต่าง ๆ ของ Host:
+```bash
+Ini, TOML
+[runners.docker]
+  # ...
+  privileged = true
+  # ...
+ ``` 
+2. Mount docker.sock เข้าไปใน Container
+กำหนดให้ Runner Mount ไฟล์ Docker Socket ของ Host (/var/run/docker.sock) เข้าไปใน Container ที่ตำแหน่งเดียวกัน:
+```bash
+Ini, TOML
+[runners.docker]
+  # ...
+  volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"] 
+  # ...
+```
+ตัวอย่างที่เเก้ไขเเล้ว
+```bash
+[[runners]]
+  name = "your-runner-name"
+  executor = "docker"
+  # ...
+  [runners.docker]
+    tls_verify = false
+    image = "alpine:latest"
+    privileged = true # เปิดโหมดพิเศษ
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"] # Mount Socket
+    shm_size = 0
+    network_mtu = 0
+    # ... ส่วนอื่นๆ
+```
 
 ## ส่วนที่ 8: การเริ่มระบบ GitLab Runner
 
