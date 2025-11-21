@@ -227,7 +227,7 @@ services:
 - `/usr/libexec/docker` - bind mount Docker plugins/utilities
   
 **ให้เข้าไปเช็คทุกครั้งในไฟล์ config.toml ของ runner ว่า Privelleged เป็น True เเละมีการ mount docker sock เเล้ว ไฟล์นี้จะเเสดงขึ้นมาหลังจากทำการลงทะเบียน gitlab runner กับ project เสร็จสิ้น**
-  แก้ไขไฟล์ /etc/gitlab-runner/config.toml บนเครื่อง Host ที่รัน Runner โดยเพิ่มการตั้งค่า 2 ส่วนในบล็อก [runners.docker] ที่ตรงกับ Runner 
+  - แก้ไขไฟล์ /etc/gitlab-runner/config.toml บนเครื่อง Host ที่รัน Runner โดยเพิ่มการตั้งค่า 2 ส่วนในบล็อก [runners.docker] ที่ตรงกับ Runner 
 
 การตั้งค่า docker.sock ใน config.toml
 1. เปิดโหมด privileged
