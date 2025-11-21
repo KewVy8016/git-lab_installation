@@ -93,6 +93,10 @@ services:
       - DELETE_IMAGES=true
       - SHOW_CONTENT_DIGEST=true
       - SINGLE_REGISTRY=true
+      - REGISTRY_HTTP_HEADERS_Access_Control_Allow_Origin: '["http://100.100.7.129:8080"]' # ใช้ IP ของ Host ที่ถูกต้อง (100.100.7.129)
+      - REGISTRY_HTTP_HEADERS_Access_Control_Allow_Methods: '["HEAD", "GET", "OPTIONS", "DELETE"]'
+      - REGISTRY_HTTP_HEADERS_Access_Control_Allow_Headers: '["Authorization", "Accept"]'
+      - REGISTRY_HTTP_HEADERS_Access_Control_Expose_Headers: '["Link"]'
     depends_on:
       - registry
     networks:
