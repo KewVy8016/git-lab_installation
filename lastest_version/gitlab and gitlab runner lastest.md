@@ -81,26 +81,25 @@ services:
     networks:
       - gitlab-network
 
-  registry-ui:
-    image: joxit/docker-registry-ui:latest
-    container_name: registry-ui
-    restart: always
-    ports:
-      - '8080:80'
-    environment:
-      - REGISTRY_TITLE=My Docker Registry
-      - REGISTRY_URL=http://registry:5000
-      - DELETE_IMAGES=true
-      - SHOW_CONTENT_DIGEST=true
-      - SINGLE_REGISTRY=true
-      - REGISTRY_HTTP_HEADERS_Access_Control_Allow_Origin: '["http://100.100.7.129:8080"]' # ใช้ IP ของ Host ที่ถูกต้อง (100.100.7.129)
-      - REGISTRY_HTTP_HEADERS_Access_Control_Allow_Methods: '["HEAD", "GET", "OPTIONS", "DELETE"]'
-      - REGISTRY_HTTP_HEADERS_Access_Control_Allow_Headers: '["Authorization", "Accept"]'
-      - REGISTRY_HTTP_HEADERS_Access_Control_Expose_Headers: '["Link"]'
-    depends_on:
-      - registry
-    networks:
-      - gitlab-network
+  registry:
+    image: registry:2
+    container_name: docker-registry
+    restart: always
+    ports:
+      - '5000:5000'
+    volumes:
+      - './registry/data:/var/lib/registry'
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_STORAGE_DELETE_ENABLED: 'true'
+      # --- ADD THESE ENVIRONMENT VARIABLES HERE ---
+      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Origin: '["http://192.168.254.128:8080"]' 
+      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Methods: '["HEAD", "GET", "OPTIONS", "DELETE"]'
+      REGISTRY_HTTP_HEADERS_Access_Control_Allow_Headers: '["Authorization", "Accept"]'
+      REGISTRY_HTTP_HEADERS_Access_Control_Expose_Headers: '["Link"]'
+      # ---------------------------------------------
+    networks:
+      - gitlab-network
 
 networks:
   gitlab-network:
